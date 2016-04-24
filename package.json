@@ -1,0 +1,19 @@
+{
+  "name": "personal-codemods",
+  "version": "0.1.0",
+  "description": "Collection of personal codemods",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DrewML/codemods.git"
+  },
+  "author": "Andrew Levine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DrewML/codemods/issues"
+  },
+  "homepage": "https://github.com/DrewML/codemods#readme"
+}

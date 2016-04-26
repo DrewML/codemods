@@ -4,9 +4,9 @@ import promisify from 'es6-promisify';
 const readFile = promisify(fs.readFile);
 const fixturePath = './fixtures';
 
-export default function getFilePairs(before, after) {
+export default function getFilePairs(fixtureName) {
     return Promise.all([
-        readFile(`${fixturePath}/${before}.js`, {encoding: 'utf8'}),
-        readFile(`${fixturePath}/${after}.js`, {encoding: 'utf8'}),
+        readFile(`${fixturePath}/${fixtureName}/in.js`, {encoding: 'utf8'}),
+        readFile(`${fixturePath}/${fixtureName}/out.js`, {encoding: 'utf8'}),
     ]);
 }

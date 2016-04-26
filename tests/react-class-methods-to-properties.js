@@ -4,25 +4,36 @@ import transform from './helpers/transform';
 import getFilePairs from './helpers/get-file-pairs';
 
 test('Transforms methods of class declarations', async t => {
-    const [before, after] = await getFilePairs(
-        'component-class-with-method',
-        'component-class-with-property'
-    );
+    const [code, expected] = await getFilePairs('component-class-with-method');
+    const result = transform({ code, codemod });
 
-    t.is(transform({
-        code: before,
-        codemod
-    }), after);
+    t.is(result, expected);
 });
 
 test('Transforms methods of class expressions', async t => {
-    const [before, after] = await getFilePairs(
-        'component-class-expr-with-method',
-        'component-class-expr-with-property'
-    );
+    const [code, expected] = await getFilePairs('component-class-expr-with-method');
+    const result = transform({ code, codemod });
 
-    t.is(transform({
-        code: before,
-        codemod
-    }), after);
+    t.is(result, expected);
+});
+
+test('Does not modify non-React related classes', async t => {
+    const [code, expected] = await getFilePairs('non-react-component');
+    const result = transform({ code, codemod });
+
+    t.is(result, expected);
+});
+
+test('Removes manually method binding', async t => {
+    const [code, expected] = await getFilePairs('manually-bound-methods');
+    const result = transform({ code, codemod });
+
+    t.is(result, expected);
+});
+
+test('Does not touch react-specific methods', async t => {
+    const [code, expected] = await getFilePairs('lifecycle-methods');
+    const result = transform({ code, codemod });
+
+    t.is(result, expected);
 });

@@ -21,7 +21,8 @@ export default function transformer(file, api) {
             'shouldComponentUpdate',
             'componentWillUpdate',
             'componentDidUpdate',
-            'componentWillUnmount'
+            'componentWillUnmount',
+            'render'
         ].includes(methodName);
     };
 

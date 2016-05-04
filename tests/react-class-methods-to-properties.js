@@ -4,7 +4,7 @@ import transform from './helpers/transform';
 import getFilePairs from './helpers/get-file-pairs';
 
 const testFixture = async (t, fixtureName) => {
-    const [code, expected] = await getFilePairs('component-class-with-method');
+    const [code, expected] = await getFilePairs(fixtureName);
     const result = transform({ code, codemod });
     t.is(result, expected);
 };
@@ -22,7 +22,7 @@ test('Does not modify non-React related classes', async t => {
 });
 
 test('Removes manually method binding', async t => {
-    await testFixture(t, 'anually-bound-methods');
+    await testFixture(t, 'manually-bound-methods');
 });
 
 test('Does not touch react-specific methods', async t => {

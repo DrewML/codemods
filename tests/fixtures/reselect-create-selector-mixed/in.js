@@ -1,21 +1,21 @@
 import {createSelector} from 'reselect';
 
 createSelector([
-        savedFilterListSelector,
-        isCollapsedSelector,
-        selectedFilterSelector,
-        showFilterEditModeSelector
+        someSelector1,
+        someSelector2,
+        someSelector3,
+        someSelector4
     ], function mapStateToProps(
-        savedFiltersList,
-        isCollapsed,
-        selectedFilter,
-        isEdit
+        some1,
+        some2,
+        some3,
+        some4
     ) {
         return {
-            isCollapsed,
-            savedFiltersList,
-            selectedFilter,
-            isEdit
+            some1,
+            some2,
+            some3,
+            some4
         };
     }
 );

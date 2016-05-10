@@ -1,10 +1,10 @@
 import {createSelector, createStructuredSelector} from 'reselect';
 
 createStructuredSelector({
-    savedFiltersList: savedFilterListSelector,
-    isCollapsed: isCollapsedSelector,
-    selectedFilter: selectedFilterSelector,
-    isEdit: showFilterEditModeSelector
+    some1: someSelector1,
+    some2: someSelector2,
+    some3: someSelector3,
+    some4: someSelector4
 });
 
 

@@ -9,6 +9,10 @@ const testFixture = async (t, fixtureName) => {
     t.is(result, expected);
 };
 
-test('Rewrites simple calls to createSelector to use createStructuredSelector', async t => {
-    await testFixture(t, 'reselect-create-selector');
+test('rewrites to createStructuredSelector, and removes unneeded import', async t => {
+    await testFixture(t, 'reselect-create-selector-unmixed');
+});
+
+test('rewrites to createStructuredSelector, and does not remove createSelector import', async t => {
+    await testFixture(t, 'reselect-create-selector-mixed');
 });

@@ -153,7 +153,29 @@ export default function transformer(file, api) {
                 property: {
                     name: 'module'
                 }
-            }).closest(j.CallExpression).remove();
+            }).closest(j.CallExpression).forEach(p => {
+                const { arguments: args } = p.node;
+                if (args.length === 1) {
+                    return j(p).remove();
+                }
+
+                const lifecycleObj = args.slice(-1)[0];
+                assert(
+                    j.ObjectExpression.check(lifecycleObj),
+                    "Expected an object of lifecycle hooks"
+                );
+
+                const hooks = lifecycleObj.properties.map(prop => {
+                    assert(j.FunctionExpression.check(prop.value), "Expected a fn expr");
+                    return {
+                        hookName: prop.key.name,
+                        fnBody: prop.value.body.body
+                    };
+                });
+
+                // TODO: Write out beforeEach/afterEach after breaking out lib
+                // to handle in tape
+            });
         }
     ]);
 

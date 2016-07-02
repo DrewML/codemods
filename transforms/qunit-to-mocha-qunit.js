@@ -1,10 +1,17 @@
 const assert = require('assert');
 
+const assertionMap = {
+    propEqual: 'deepEqual',
+    raises: 'throws'
+};
+
 export default function transformer(file, api) {
     const j = api.jscodeshift;
-    const root = j(file.source);
     if (!file.path.includes('__TEST__')) return;
+    const root = j(file.source);
 
+    let qunitIdentifier;
+  
     // Note: Transforms are order dependent
     const transforms = new Set([
         function removeImport() {
@@ -13,6 +20,9 @@ export default function transformer(file, api) {
                     value: 'qunit'
                 }
             });
+
+            if (!qunitImport.size()) return;
+            qunitIdentifier = qunitImport.get(0).node.specifiers[0].local.name;
 
             qunitImport.insertAfter(j.importDeclaration(
                 [j.importSpecifier(j.identifier(' assert '))],
@@ -30,6 +40,9 @@ export default function transformer(file, api) {
                 arguments: args => args[0].value === 'qunit'
             }).closest(j.VariableDeclaration);
 
+            if (!qunitRequire.size()) return;
+            qunitIdentifier = qunitRequire.get(0).node.declarations[0].id.name;
+
             qunitRequire.insertAfter(j.variableDeclaration(
                 'const', [j.variableDeclarator(
                     j.identifier('assert'),
@@ -45,7 +58,7 @@ export default function transformer(file, api) {
         function swapTestCallExpr() {
             root.find(j.MemberExpression, {
                 object: {
-                    name: 'QUnit'
+                    name: qunitIdentifier
                 },
                 property: {
                     name: 'test'
@@ -54,7 +67,7 @@ export default function transformer(file, api) {
 
             root.find(j.MemberExpression, {
                 object: {
-                    name: 'QUnit'
+                    name: qunitIdentifier
                 },
                 property: {
                     name: 'skip'
@@ -74,6 +87,24 @@ export default function transformer(file, api) {
                 const testFn = p.node.arguments.slice(-1)[0];
                 assert(testFn.params.length === 1, 'Expected only 1 param in test fn');
                 testFn.params = [];
+            });
+        },
+
+        function swapAssertions() {
+            Object.keys(assertionMap).forEach(assertion => {
+                const newAssertion = assertionMap[assertion];
+
+                root.find(j.MemberExpression, {
+                    object: {
+                        name: 'assert'
+                    },
+                    property: {
+                        name: assertion
+                    }
+                }).replaceWith(j.memberExpression(
+                    j.identifier('assert'),
+                    j.identifier(newAssertion)
+                ));
             });
         },
 
@@ -105,7 +136,7 @@ export default function transformer(file, api) {
         function updateModuleAndLifecycle() {
             const moduleCall = root.find(j.MemberExpression, {
                 object: {
-                    name: 'QUnit'
+                    name: qunitIdentifier
                 },
                 property: {
                     name: 'module'
